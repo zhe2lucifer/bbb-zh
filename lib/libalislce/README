@@ -1,0 +1,66 @@
+/**
+\mainpage
+The Crypto Engine is major used for secure KEY management, which includes:
+	(1) Fetching secure key from OTP
+	(2) 1/2/3-layer key ladder encryption/decryption
+	(3) KEY/CW management
+	(4) AES/3DES ECB 128bit mode
+
+Crypto Engine can read secure key from OTP, the secure key must be put into level 0
+registers/positions inside Crypto Engine, there has four level 0 registers/positions,
+so it can load four secure key from OTP at the same time.
+
+Crypto Engine support 1/2/3-layer key ladder decryption/encryption, it can generate a key into 
+higher level registers by the lower level key, there has four levels registers inside the Crypto
+Engine and the total number of the registers is 32.
+
+Crypto Engine can support AES/3DES mode. The AES in Crypto Engine works in ECB mode and only
+support 128bits KEY mode. The input and output data width of AES is 128 bit. The 3DES in Crypto
+Engine works in ECB mode and support ABA 128bits KEY mode, the input and output data width of
+DES is 64 bit.
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --prefix= CC= CFLAGS= --host= 
+
+	make 
+
+	make install 
+
+2  Debug and Test
+
+	./autogen.sh 
+
+	./configure --prefix=$install_dir CC= CFLAGS= --enable-debug --enable-examples --host= 
+
+	make 
+
+	make install 
+	
+	cp $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	compile the SDK 
+
+	download the image to board 
+	
+3  Dependencies
+
+	-pthread (examples)
+
+	ali descramble (src)
+
+4  PKG-CONFIG Command
+
+	PKG_CONFIG_PATH= pkg-config --libs "libalislce"
+
+5  Notes
+
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee to safety.
+
+*/

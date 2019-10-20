@@ -1,0 +1,28 @@
+/**
+\mainpage
+The libalislstorage is for system information operation.
+It is for upper level to use system information.
+
+1 Compilation
+	./autogen.sh 
+	./configure --prefix= CC= CFLAGS= --host= 
+	make 
+	make install 
+
+2 Debug and Test
+	(These steps if for who to compile libs in aliplatform then test the example kit in SDK).
+	2.1 cp $install_dir/bin/* $fs_dir/usr/bin;  cp $install_dir/lib/*so* $fs_dir/usr/lib 
+	2.2 compile the SDK 
+	2.3 download the image to board 
+	2.4 cd usr/bin, excute:
+	./alislsysinfokit
+
+3 Dependencies
+	ali storage lib
+
+4 Notes
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee to safety.
+
+*/

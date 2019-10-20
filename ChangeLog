@@ -1,0 +1,10 @@
+2013-6-5
+
+1  Add cpputest support
+2  Add BUILD_BYPLATFORM macro for sub module
+3  Add platform and log first version unitest
+
+2014-04-04
+
+1. Remove CppUtest, use UNITY framework default.
+2. Disable DB, HWCRYPTO and CIC default.

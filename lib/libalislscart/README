@@ -1,0 +1,69 @@
+/**
+\mainpage
+It's a scart share library.
+
+0  How to Use This scart
+
+    If you want use function in scart share lib,
+  
+    Firstly you must include <alislscart.h> and must add " $libalislscart/src/libalislscart.la "
+	
+	in your libalisl$module/src/Makefile.am
+	
+	Main function of scart share lib:
+	
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --prefix= CC= CFLAGS= --host= 
+
+	make 
+
+	make install 
+
+2  Debug and Test
+
+	./autogen.sh 
+
+	./configure --prefix=$install_dir CC= CFLAGS= --enable-debug --enable-examples --host= 
+
+	make 
+
+	make install 
+
+	make html   (To generate documentation)
+	
+	cp $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	compile the SDK 
+
+	download the image to board 
+
+	--------------------------------------------
+
+	The following step is run in board terminal
+
+	--------------------------------------------
+
+3  Dependencies
+
+	-pthread (examples)
+
+	ali scart driver (src)
+
+	ali tailed kernel (src)
+
+4  PKG-CONFIG Command
+
+	PKG_CONFIG_PATH= pkg-config --libs "scart"
+
+5  Notes
+
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee to safety.
+*/

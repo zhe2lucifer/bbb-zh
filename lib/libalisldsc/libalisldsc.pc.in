@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: libalisldsc
+Description: libalisldsc include CSA/AES/DES/SHA mode for encrypt/decrypt stream/data.
+Version: @VERSION@
+Libs: -L${libdir} -ldsc @THREADLIB@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

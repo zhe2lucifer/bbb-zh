@@ -1,0 +1,2 @@
+2013-5-21, Support TRNG hardware wrapper layer in user space for multi
+processes and multi threads environment.

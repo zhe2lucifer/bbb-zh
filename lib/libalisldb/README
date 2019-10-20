@@ -1,0 +1,33 @@
+/**
+\mainpage
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --enable-examples --enable-docs --prefix= --host= CPPFLAGS=-Ipath/to/include/ali_common
+
+	make 
+
+	make install 
+
+2  Debug
+
+	./autogen.sh 
+
+	./configure --enable-debug --enable-examples --enable-docs --prefix= --host= CPPFLAGS=-Ipath/to/include/ali_common
+
+	make 
+
+	make install 
+	
+	cp -rdf $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp -rdf $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	cp -rf $install_dir/etc/* $fs_dir/etc/
+
+	compile the SDK 
+
+	download the image to board 
+*/

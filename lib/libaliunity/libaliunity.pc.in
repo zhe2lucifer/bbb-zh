@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Lib Test Unity
+Description: Commond Line Interface
+Version:
+Libs: -L${libdir} -laliunity
+Libs.private: -L${libdir}
+Cflags: -I${includedir}

@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Libsoc
+Description: SCART share library for soc module
+Version:@VERSION@
+Libs: -L${libdir} -lalislsoc @THREADLIB@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: libalislnim
+Description: libalislnim library for hardware random generator
+Version: @VERSION@
+Requires: libaliplatform
+Libs: -L${libdir} -lalislnim -lpthread
+Libs.private: -L${libdir}
+Cflags: -I${includedir}

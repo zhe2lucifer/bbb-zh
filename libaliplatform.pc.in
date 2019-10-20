@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Lib ALi platform
+Description: ALi platform interface for application
+Version: @VERSION@
+Libs: -L${libdir} -laliplatform
+Cflags: -I${includedir}

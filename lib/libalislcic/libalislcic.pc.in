@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Lib libalislcic 
+Description: libalislcic library, CI controller
+Version: @VERSION@
+Libs: -L${libdir} -lalislcic @THREADLIB@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

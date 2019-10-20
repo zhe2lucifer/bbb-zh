@@ -1,0 +1,56 @@
+
+                Layered Share Object
+
+1  Device Wrapper Module List
+
+PIC      ALi Module          Linux Standard Framework    Open Source Library (Linux Standard)  Description
+-------------------------------------------------------------------------------------------------------------
+Owen     TRNG (Demo)         HW RANDOM / SW RANDOM       openssl / libgcrypt / cryptlib (Y)    Random Generator
+Terry    DSC                 CRYPTO                      openssl / libgcrypt / cryptlib (Y)    
+Terry    AES                 CRYPTO / AES                openssl / libgcrypt / cryptlib (Y) 
+Terry    DES                 CRYPTO / DES                openssl / libgcrypt / cryptlib (Y) 
+Terry    SHA                 CRYPTO / SHA                openssl / libgcrypt / cryptlib (Y) 
+Terry    CE (Key Ladder)     N/A                         N/A                                   Advance Security
+Terry    CSA                 N/A                         libdvbcsa (N)                         Stream Descrambler
+Summer   SmartCard           DVBAPI                      OpenSC / OSCam (N)
+Summer   DMX                 DVBAPI                      N/A
+Jonathan FAKE (Demo)         N/A                         N/A                                   Fake Driver for Special Usage
+Ze       HDMI                N/A                         N/As
+Franky   NIM                 DVBAPI                      N/A
+Ze       AUDIO               ALSA                        libasound
+Stephen  CIC                 DVBAPI                      N/A
+Franky   TSG                 N/A                         N/A
+Franky   TSI                 N/A                         N/A
+Gavin    OTP                 N/A                         N/A
+**       PE                  N/A                         N/A                                   PE Cache
+Jonathan PM                  N/A                         N/A                                   Power Management
+Andy     PMU                 N/A                         N/A
+Jonathan SCART               N/A                         N/A
+**Ze       SDEC                N/A                         N/A
+Gavin    SOC                 N/A                         N/A
+**Alan     STC                 N/A                         N/A                                   Should Never Accessed by Application Directly
+**Evan     UART_IO             SERIAL                      N/A                                   Is it must ?
+**Andy     VBI                 N/A                         N/A
+Andy     VIDEO               V4L                         libv4l
+Evan     FLASH               MTD                         N/A  						            storage/sysinfo
+Glen     GE/DFB              N/A                         ??
+Jonathan WATCHDOG            N/A                         N/A
+Bill     RFK
+
+Owen	 LOG
+Owen	 PLATFORM
+
+-------------------------------------------------------------------------------------------------------------
+Evan     UPGRADE             N/A                         N/A                                   Unified upgrade lib
+**     SI
+**     CHAN CTRL
+Elan     DB
+//Terry    CA
+Franky   DiSQeC
+Franky   NIM
+Terry    CRYPT
+Alan     MP        
+         SHM      
+
+-------------------------------------------------------------------------------------------------------------
+DVBAPI          

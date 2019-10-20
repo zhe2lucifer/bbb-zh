@@ -1,0 +1,209 @@
+/**
+\mainpage
+It's a fake share lib.
+
+0  How to Use This fake
+
+    If you want use function in fake share lib,
+  
+    Firstly you must include <alislfake.h> and must add " $libalislfake/src/libalislfake.la "
+	
+	in your libalisl$module/src/Makefile.am
+	
+	Main function of fake share lib:
+	
+	1)get tick time of program to use to optimize code or test program implement time 
+	
+	//true: enable ALISLFAKE_GET_TICK_IN:start test  ALISLFAKE_GET_TICK_IN:end test
+	
+	alislfake_wrapper_get_tick("exam 1 Program start!\n", true, ALISLFAKE_GET_TICK_IN); 
+	
+	"your code or fun"
+	
+	alislfake_wrapper_get_tick("exam 1 Program end!\n", true, ALISLFAKE_GET_TICK_OUT); 
+	
+	when program is running, you can view print "LIB FAKE:%s The gap %lu us" to get your code or fun run time.
+	
+	2)show memory start address.
+	
+	view memory start address.
+	
+	3)show memory map status of use. 
+	
+	view memory status of use.
+	
+	4)show stack of all task.
+	
+	view call trace of fun in all task
+	5)show one stack by task pid.
+	
+	view call trace of fun in one task by pid.
+	
+    if you need the function details , please look up .html in doc 
+	
+	if you have any question,please contrast me to discuss,thanks!
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --prefix= CC= CFLAGS= --host= 
+
+	make 
+
+	make install 
+
+2  Debug and Test
+
+	./autogen.sh 
+
+	./configure --prefix=$install_dir CC= CFLAGS= --enable-debug --enable-examples --host= 
+
+	make 
+
+	make install 
+
+	make html   (To generate documentation)
+	
+	cp $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	compile the SDK 
+
+	download the image to board 
+
+	--------------------------------------------
+
+	The following step is run in board terminal
+
+	--------------------------------------------
+
+	1)Test fun alislfake_get_tick start!
+	
+	Test example:a)Test usleep(1000) run time
+	
+	LIB FAKE:The fake Test exam 1 Program end!
+	
+	The gap 1237 us
+	 
+	Test example:b)Test usleep(10000) run time
+	
+	LIB FAKE:The fake Test exam 2 Program end!
+	
+	The gap 10226 us
+	 
+	Success to run a FAKE test!
+	
+	the fun 's err is 200 - 250us
+	
+	2)Test fun alislfake_get_mm_ddr start!
+	
+	fake : memstart = 0x00000000
+	
+	Success to run a FAKE test!
+
+    3)Test fun alislfake_show_mem start!
+  
+	Mem-InfoALISL:
+	
+	Normal per-cpu:
+	
+	CPU    0: hi:   42, btch:   7 usd:  10
+	
+	active_anon:609 inactive_anon:26 isolated_anon:0
+	
+	active_file:495 inactive_file:3770 isolated_file:0
+	
+	unevictable:0 dirty:0 writeback:0 unstable:0
+	
+	free:8328 slab_reclaimable:504 slab_unreclaimable:12471
+	
+	mapped:583 shmem:28 pagetables:65 bounce:0
+	
+	Normal free:33312kB min:1532kB low:1912kB high:2296kB 
+	
+	active_anon:2436kB inactive_anon:104kB active_file:1980kB 
+	
+	inactive_file:15080kB unevictable:0kB isolated(anon):0kB 
+	
+	isolated(file):0kB present:146892kB mlocked:0kB dirty:0kB 
+	
+	writeback:0kB mapped:2332kB shmem:112kB slab_reclaimable:2016kB 
+	
+	slab_unreclaimable:49884kB kernel_stack:680kB pagetables:260kB 
+	
+	unstable:0kB bounce:0kB writeback_tmp:0kB pages_scanned:0 all_unreclaimable? no
+	
+	lowmem_reserve[]: 0 0
+	
+	Normal: 28*4kB 6*8kB 6*16kB 3*32kB 3*64kB 2*128kB 1*256kB 1*512kB 3*1024kB 4*2048kB 5*4096kB = 33312kB
+	
+	4293 total pagecache pages
+	
+	45269 pages RAM
+	
+	16562 pages reserved
+	
+	1972 pages shared
+	
+	5951 pages non-shared
+	
+	Success to run a FAKE test!
+	
+	4)Test fun alislfake_show_stack_pid start!
+	
+	fake_trace_show_stack entered
+	
+	fake_test     S 84749DB8
+	
+	Stack : 00000000 00000006 806026c0 775f7518 84749dd4 84749db8 83c3a138 83c3a578
+	        
+	        84749dc4 00000000 84749db8 00000001 84749db8 775f7518 00000391 ffffffff
+	        
+	        84749d78 8015dd58 00000002 00000000 ffffffea 00000000 00000001 84749db8
+	        
+	        00000000 00000000 00000000 8015ded0 8996c380 00000000 8113ebc0 00000000
+	        
+	        84749d78 8018d510 80bdbf88 00000000 00000000 8472b7dc 00000028 00000007
+	        
+	        ...
+	        
+	Call Trace:
+	
+	[<804e23d8>] __schedule+0x62c/0x6c8
+	
+	[<8015dd58>] futex_wait_queue_me+0x120/0x140
+	
+	[<8015ded0>] futex_wait+0x138/0x280
+	
+	[<801601a4>] do_futex+0xe8/0xb38
+	
+	[<80160d4c>] sys_futex+0x158/0x194
+	
+	[<80110a64>] stack_done+0x20/0x40
+	
+	fake_trace_show_stack entered
+	
+	fake_test     R running 
+	
+	Success to run a FAKE test!
+	
+3  Dependencies
+
+	-pthread (examples)
+
+	ali fake driver (src)
+
+	ali tailed kernel (src)
+
+4  PKG-CONFIG Command
+
+	PKG_CONFIG_PATH= pkg-config --libs "fake"
+
+5  Notes
+
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee to safety.
+*/

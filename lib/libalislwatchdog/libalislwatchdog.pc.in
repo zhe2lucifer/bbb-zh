@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Libwatchdog
+Description: SCART share library for watchdog module
+Version:@VERSION@
+Libs: -L${libdir} -lalislwatchdog @THREADLIB@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

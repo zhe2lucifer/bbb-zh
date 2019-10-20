@@ -1,0 +1,126 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.68])
+AC_INIT([libalislotp], [0.0.0], [Alan.Zhang@alitech.com], [libalislotp], [http://www.alitech.com])
+AC_CONFIG_HEADERS([config.h])
+
+LIBALISLWATCHDOG_MAJOR_VERSION=0
+LIBALISLWATCHDOG_MINOR_VERSION=0
+LIBALISLWATCHDOG_MICRO_VERSION=0
+LIBALISLWATCHDOG_INTERFACE_AGE=0
+LIBALISLWATCHDOG_BINARY_AGE=0
+LIBALISLWATCHDOG_VERSION=$LIBALISLWATCHDOG_MAJOR_VERSION.$LIBALISLWATCHDOG_MINOR_VERSION.$LIBALISLWATCHDOG_MICRO_VERSION
+
+AC_SUBST(LIBALISLWATCHDOG_MAJOR_VERSION)
+AC_SUBST(LIBALISLWATCHDOG_MINOR_VERSION)
+AC_SUBST(LIBALISLWATCHDOG_MICRO_VERSION)
+AC_SUBST(LIBALISLWATCHDOG_INTERFACE_AGE)
+AC_SUBST(LIBALISLWATCHDOG_BINARY_AGE_AGE)
+AC_SUBST(LIBALISLWATCHDOG_VERSION)
+
+AC_DEFINE_UNQUOTED(LIBALISLWATCHDOG_VERSION, "$LIBALISLWATCHDOG_VERSION", [The libalislotp version])
+AC_DEFINE_UNQUOTED(LIBALISLWATCHDOG_MAJOR_VERSION, $LIBALISLWATCHDOG_MAJOR_VERSION, [The libalislotp major version])
+AC_DEFINE_UNQUOTED(LIBALISLWATCHDOG_MINOR_VERSION, $LIBALISLWATCHDOG_MINOR_VERSION, [The libalislotp minor version])
+AC_DEFINE_UNQUOTED(LIBALISLWATCHDOG_MICRO_VERSION, $LIBALISLWATCHDOG_MICRO_VERSION, [The libalislotp micro version])
+
+PACKAGE=libalislotp
+VERSION=$LIBALISLWATCHDOG_VERSION
+
+# libtool versioning
+LT_RELEASE=$LIBALISLWATCHDOG_MAJOR_VERSION.$LIBALISLWATCHDOG_MINOR_VERSION
+LT_CURRENT='expr $LIBALISLWATCHDOG_MICRO_VERSION - $LIBALISLWATCHDOG_INTERFACE_AGE'
+LT_BINARY='expr $LIBALISLWATCHDOG_MICRO_VERSION -$LIBALISLWATCHDOG_BINARY_AGE'
+LT_REVISON=$LIBALISLWATCHDOG_INTERFACE_AGE
+LT_AGE='expr $LIBALISLWATCHDOG_BINARY_AGE -$LIBALISLWATCHDOG_INTERFACE_AGE'
+
+AC_SUBST(LT_RELEASE)
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_BINARY)
+AC_SUBST(LT_REVISON)
+AC_SUBST(LT_AGE)
+
+AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
+
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_CXX
+AM_PROG_LIBTOOL
+AM_PROG_CC_C_O
+
+# Checks for libraries.
+
+# Checks for header files.
+AC_CHECK_HEADERS([stdlib.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+
+# Checks for library functions.
+AC_CHECK_FUNCS([getopt getopt_long])
+
+AC_ARG_ENABLE([examples],
+			  AC_HELP_STRING([--enable-examples],
+							 [build sample programs @<:@default=no:>@]),
+			  [],
+			  [enable_examples=no])
+AM_CONDITIONAL(BUILD_EXAMPLES, test "$enable_examples" = "yes")	
+
+AC_ARG_ENABLE([tests],
+			  AC_HELP_STRING([--enable-tests],
+							 [build module unitest @<:@default=no:>@]),
+			  [],
+			  [enable_tests=no])
+
+AM_CONDITIONAL(BUILD_TESTS, test "$enable_tests" = "yes")
+
+AC_ARG_ENABLE([docs],
+			  AC_HELP_STRING([--enable-docs],
+							[build documentation @<:default=no:>@]),
+			 [],
+			 [enable_docs=no])
+AM_CONDITIONAL(BUILD_DOCUMENT, test "$enable_docs" = "yes")
+
+if test "$enable_docs" = "yes"; then
+	AC_CHECK_PROG(DOXYGEN, [doxygen], [true], [false])
+fi
+AM_CONDITIONAL(HAVE_DOXYGEN, [test "$DOXYGEN" = "ture"])
+
+AM_CONDITIONAL(BUILD_SHARED, [test "$enable_shared" = "yes"])
+
+
+AM_CONDITIONAL(BUILD_STATIC,  [test "$enable_static" = "yes"])
+
+AC_ARG_ENABLE([debug],
+			 AC_HELP_STRING([--enable-debug],
+			 [enable debug information output @<:@default=no@:>@]),
+			 [],
+			 [enable_debug=no])
+if test "$enable_debug" = "yes"; then
+	CFLAGS="-g3 -O0 -fno-inline -Wno-inline $CFLAGS"
+	ENABLE_DEBUG=1
+	AC_DEFINE(ENABLE_DEBUG, 1 , [Define to 1 if you want to output log.])
+else 
+	ENABLE_DEBUG=0
+fi
+
+AM_CONDITIONAL(BUILD_DEBUG, test "$enable_debug" = "yes")
+AC_SUBST(ENABLE_DEBUG)
+
+
+AC_OUTPUT([
+Makefile
+libalislotp.pc
+
+src/Makefile
+include/Makefile
+doc/Makefile
+doc/doxygen/Makefile
+examples/Makefile
+
+])
+
+AC_MSG_RESULT([])
+AC_MSG_RESULT([examples    : ${enable_examples}])
+AC_MSG_RESULT([debug       : ${enable_debug}])
+AC_MSG_RESULT([docs        : ${DOXYGEN}])
+AC_MSG_RESULT([cppflags    : ${CPPFLAGS}])

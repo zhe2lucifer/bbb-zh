@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: System Information
+Description: System information library for ALi System Information area
+Version: @VERSION@
+Libs: -L${libdir} -lalislsysinfo @THREADLIB@ @OSX_LIBS@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@ @ZLIB_LIBS@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

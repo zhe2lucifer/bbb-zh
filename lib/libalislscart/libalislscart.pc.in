@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Libscart
+Description: SCART share library for scart module
+Version:@VERSION@
+Libs: -L${libdir} -lalislscart @THREADLIB@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

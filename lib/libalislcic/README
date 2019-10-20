@@ -1,0 +1,67 @@
+/**
+\mainpage
+According DVB EN 50221, Set Top Box can connect with CAM (Conditional Access 
+Module)card by DVB Common Interface for support conditional access and other 
+extend application. The DVB Common Interface V1.0 is a PCMCIA based bus in 
+physical layer, and we can use the CI controller (CIC) for our chipset to support
+Common Interface.
+
+The goal of designing CIC share library is to achieve HW independence of application
+software.
+
+As opposed to define a general-purpose, complete CI controller modular API interface
+, we only define some common and necessary API. 
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --prefix= CC= CFLAGS= --host= 
+
+	make 
+
+	make install 
+
+2  Debug and Test
+
+	./autogen.sh 
+
+	./configure --prefix=$install_dir CC= CFLAGS= --enable-debug --enable-examples --host= 
+
+	make 
+
+	make install 
+
+	make html   (To generate documentation)
+	
+	cp $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	compile the SDK 
+
+	download the image to board 
+
+	--------------------------------------------
+
+	The following step is run in board terminal
+
+	--------------------------------------------
+
+3  Dependencies
+
+
+4  Support Open Source Library
+
+
+5  PKG-CONFIG Command
+
+	PKG_CONFIG_PATH= pkg-config --libs "libalisltemplate"
+
+6  Notes
+
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee the safety.
+
+*/

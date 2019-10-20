@@ -1,0 +1,59 @@
+/**
+\mainpage
+Descrambler is a function block for encrypt/decrypt data for security purpose. It provides
+HW accelerator function for the Crypto, Hash, and Scramble/Descramble function. The Descrambler
+could be used in the following secure purpose:
+	(1) Data Encryption/Decryption
+	(2) Data Hash digest generation
+	(3) Message Signature Certification accelerater
+	(4) TS Descrable
+	(5) TS Scramble with specified key
+
+With DMA and High performance Scrambl/Descramble Engine, this block could be used in the CA
+application without external CAM module for multiple programs at the same time.
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --prefix= CC= CFLAGS= --host= 
+
+	make 
+
+	make install 
+
+2  Debug and Test
+
+	./autogen.sh 
+
+	./configure --prefix=$install_dir CC= CFLAGS= --enable-debug --enable-examples --host= 
+
+	make 
+
+	make install 
+	
+	cp $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	compile the SDK 
+
+	download the image to board 
+
+3  Dependencies
+
+	-pthread (examples)
+
+	ali crypto engine (src)
+
+4  PKG-CONFIG Command
+
+	PKG_CONFIG_PATH= pkg-config --libs "libalisldsc"
+
+5  Notes
+
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee to safety.
+
+*/

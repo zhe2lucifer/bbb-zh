@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: libalislvdec
+Description: libalislvdec library for control vpost
+Requires: libaliplatform
+Version: @VERSION@
+Libs: -L${libdir} -lalislvdec -lpthread
+Libs.private: -L${libdir}
+Cflags: -I${includedir}

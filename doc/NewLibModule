@@ -1,0 +1,29 @@
+
+		How to Add a New Module in Platform
+
+1  Develop you module separatly
+2  Put your module into lib directory
+3  Add needed Makefile into top configure.in
+4  Modify directory in your Makefile.am to relative value, 
+   such as use $(srcdir) / $(builddir) / etc instead of 
+   $(top_srcdir) / $(top_builddir) / etc.
+5  Maintain your module's version in the Makefile.am which 
+   will generate your share object
+6  Maintain your module's document version and package name 
+   in the Makefile.am which will generate your document
+7  Add your module into lib/Makefile.am's SUBDIRS
+8  Add BUILD_BYPLATFORM definition to your module's configure.in
+9  Also maintain needed built in MACRO in your configure.in
+	BUILD_DEBUG
+	BUILD_EXAMPLES
+	BUILD_DOCUMENT
+	BUILD_TESTS
+	ENABLE_DEBUG
+10 Configure and compile aliplatform as any 3rd library you
+   use
+
+Notes:
+
+1  To keep it to be simple, we don't pass the variables from 
+   the top configure.in, but just let each module to maintain 
+   its version and document package name internally.

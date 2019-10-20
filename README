@@ -1,0 +1,67 @@
+/**
+		How to Use ALi Platform Environment
+
+1  Content
+
+/aliplatform         ----     Root of ALi platform environment
+	/lib			 ----     Libraries directory
+		/libxxx		 ----	  Sub libraries
+
+2  Layer
+2.1  Platform layer
+	They're a series libraries named libalipltfxxx which provide basic
+	system functionality such as log management to other library or
+	application
+2.2  Library layer
+	They're a series libraries named libalislxxx which provide specific
+	function to application
+2.3  Platform library
+	It's a library named libaliplatform.so which provide a integrated
+	way to application for some specific usage such as initialize log
+	for all module, etc.
+2.4  Utils layer
+	It's a series libraries and utilities which will be the base of
+	the whole system user space running, such as window manager, etc.
+
+3  Dependencies
+			   DEP
+	Utils  ------------>  Platform library
+	  \                            /
+	   \						  /
+	    \					     /
+		 \|       DEP           |/
+         -------------------------
+		       Library Layer
+		 -------------------------
+		       Platform Layer
+		 -------------------------
+
+4  Development
+	For current structure, if you want to compile your module separately,
+	and your module depends on another module. Due to we have bound the
+	dependencies in the Makefile.am, you need to modify your Makefile.am
+	of all LIBADD / LDADD parameter to resolve the dependencies, through
+	CFLAGS / LDFLAGS or a directory of your dependency libraries.
+
+5  Kernel Header
+	Many device wrapper module need kernel header. You need to set CFLAGS
+	for such module as: CFLAGS=-I${kerneldir}/include/ali_common, where
+	kerneldir should be replaced by your own kernel directory.
+
+6  Add a Module Unitest to Platform
+	Add your unitest in to tests/platform/pltftest.c
+	Solve all compile error
+	Then compile the platform
+	
+	Then unitest should be also compile & run smoothly in the sub-module
+
+	You have to copy the board configuration file "aliplatform_test_config.ini"
+	to your program directory.
+
+7  Cross Compile
+	./autogen.sh
+	./configure --prefix= CC= CXX= CFLAGS= (--enable-docs --enable-examples --enable-tests --enable-debug)
+	make
+	make install
+
+*/

@@ -1,0 +1,312 @@
+
+                ALi Platform Coding Rule
+
+1  The module located in aliplatform must follow the following rules
+Reviewers:
+Reviewers:        
+
+2  Threads and Processes Protection
+
+Thread:     pthread conditional variable, pthread mutex
+Process:    semaphore shared between process (sem, shm)
+            man sem_inits
+            
+3  Coding Style
+3.1  C Source Header
+/*
+ *  (c) Copyright 2013-2999  ALi Corp. ZHA Linux SDK Team (alitech.com)
+ *  All rights reserved 
+ *
+ *  @file           
+ *  @brief          
+ *
+ *  @version        1.0
+ *  @date           
+ *  @revision       none
+ *
+ *  @author         
+ */
+
+3.2  C Header Header
+3.2.1  Header
+/*
+ *  (c) Copyright 2013-2999  ALi Corp. ZHA Linux SDK Team (alitech.com)
+ *  All rights reserved 
+ *
+ *  @file           
+ *  @brief          
+ *
+ *  @version        1.0
+ *  @date           
+ *  @revision       none
+ *
+ *  @author         
+ */
+ 
+3.2.2  Dual Include Protection
+#ifndef __$MODULENAME_$FILENAME_$MISC__H_
+#define __$MODULENAME_$FILENAME_$MISC__H_
+....
+#endif
+
+Example:
+#ifndef __STORAGE_INTERFACE__H_
+#define __STORAGE_INTERFACE__H_
+
+#endif
+
+3.2.3  CPlusPlus Export
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+Note: This announcement should be after all include file, otherwise
+      it may affect the attributes of the included file.
+      
+3.3  C Code
+3.3.1  Function Header
+/**
+ *  Function Name:  test
+ *  @brief          
+ *
+ *  @param
+ *  @param
+ *
+ *  @return
+ *
+ *  @author         Zhao Owen <Owen.Zhao@alitech.com>
+ *  @date           05/31/2013, Created
+ *
+ *  @note
+ */
+
+3.3.2  Comment in Function
+Don't use "/**" to be the beginning. 
+/* Read a whole block firstly */
+
+3.3.3  Function Name
+No more than 4 "_"
+
+For internal function
+return_t alisl$modulename_xxx_xxx_xxx_xxx (...)
+low case letters
+
+Example:
+
+For exported APIs:
+alisl_retcode alisl$modulename_op_er_a_tion (...)
+
+Example:
+alisl_retcode alislstorage_open(sto_dev_t *dev)
+
+static for local function / variable
+
+variable: low case letters
+
+3.3.4  Function Line NO and Source Line NO.
+Less than 200 for function.
+Less than 1000 for source file
+
+3.3.5  Function Parameter
+No more than 4.
+
+3.3.6  Module Log
+1) Switchable
+2) Recognizable
+3) Formated
+4) Meaningful
+
+Recommend:
+$Module $LOGLEVEL: In $FUNC What 
+
+Example:
+STO_DEBUG("STOrage WARN: In %s Device %s already opened\n", \
+          __FUNCTION__, dev->dev_name);
+
+3.3.7  Each Line Max Length
+Less than 80 (Old screen width of terminal)
+
+3.3.8  Function Call
+Should be :
+func(arg1, arg2, )
+
+Never :
+func (...)
+func( arg1, arg2 )
+func(arg1,arg2)
+....
+
+3.3.9  Expression Such as "if / for / while"
+Should be :
+if (exp1; exp2; exp3) {
+} else {
+}
+
+MUST for {} under if
+
+or :
+if (exp1; exp2; exp3)
+{
+}
+else 
+{
+}
+switch () {
+case:
+	break;
+case:
+	break;
+default:
+	break;
+}
+
+switch () 
+{
+	case:
+		break;
+	case:
+		break;
+	default:
+		break;
+}
+
+Not:
+......
+
+Notes: Must to be consistent in the same module
+
+3.3.10 Structure Definition
+typedef struct $module_$attr {
+} $module_$attr_t
+
+Example:
+typedef struct trng_dev {
+    char            *dev_name;
+    int             handle;
+} trng_dev_t;
+
+Alignment of the struct menbers
+Use compiler key word directly: size_t off_t uint32_t int ......
+
+3.3.11 A descriptor for each module, which should contain:
+    1  variables for guys who will use the module
+    2  a void pointer for the module expansion
+And, the descriptor should be the first parameter of device wrapper function, 
+and hiden from the function wrapper function
+
+Example:
+
+typedef struct trng_dev {
+    char            *dev_name;
+    void            *private;
+} trng_dev_t;
+
+/* It device wrapper */
+alisl_retcode alisltrng_open(trng_dev_t *dev);    
+/* It function wrapper */  
+alisl_retcode alisltrng_get_bytes_rand(char *buf, size_t len);
+
+3.3.12 Every device wrapper module should and only provide the following interface
+_construct _open _ioctl _start _abort _stop _close _destruct
+Make sure thread safe / process safe of this layers
+Function interface will be implemented with driver wrapper
+
+3.3.12 Others
+Unique prefix for function -- alisl
+Posix standard data type
+Assembled error information of each module
+Header in $prefix/include directly
+Suggest to maintain version for each sub module according to open source standard
+Use tab key for code alignment, set tabstop=4
+Function will return alisl_retcode, special implementation is allowed to return- 
+with meaningful value, which should be described in function header
+bool function is allowed
+Libname: libalisl$module
+Function Name: alisl$module_xxxx_xxxx_xxxx_xxxx
+Every apllication need to implement parameters to define which module to output, 
+the log module will implement mechanism
+    
+
+4  Directory Structure
+libalislxxx/
+    README
+    NEWS
+    ChangeLog
+    AUTHORS
+    src/
+    examples/
+    docs/
+    include/
+    congifure.in
+    autogen.sh
+    .pc file
+    Makefile.am
+    
+Example:
+libalislstorage/
+    README
+    NEWS
+    ChangeLog
+    AUTHORS
+    src/
+    examples/
+    docs/
+    include/
+    configure.in
+    autogen.sh
+    storage.pc.in
+    Makefile.am
+
+5  Documents Content
+README:         How to use the source packet
+NEWS:           News of this release
+ChangeLog:      Update list
+AUTHORES:       Author / Maintainer information
+src:            Code to generate the share object
+examples:       Sample code and uni-test
+docs:           Module document, such as API usage
+include:        Module header files
+configure.in:   Source pattern of configure for auto toolchain
+autogen.sh:     Auto toolchain script
+.pc file:       PC file for pkg-config searching
+Makefile.am:    Source pattern of Makefile for auto toolchain
+
+6  Others
+
+Structure of platform:
+/aliplatform
+    /
+    /lib
+        /libali...
+        /libalislstorage
+        /libdb
+        
+platform/configure -> --enable-xxx ==> Module PIC also need help to main- 
+platform/configure.in, platform/Makefile.am
+
+For libalilog (basic log module)
+
+1  Flexible error translate list
+1.1   *msg[], err[LOG_ID_DMX] = {dmx_msg1, dmx_msg2, ...}
+              err[LOG_ID_TRNG] = {trng_msg1, trng_msg2, ...}
+1.2   msg_node --- LOG_ID_DMX --- LOG_ID_TRNG --- ...... ---
+                       |              |
+                  dmx log node   trng log node
+1.3   err_handler[], log_id_err_handler[LOG_ID_DMX] = alidmx_perror
+                     log_id_err_handler[LOG_ID_TRNG] = alitrng_perror
+         
+         #define LOG_ID_GENERIC 	    0x0       (POSIX errno, which will be translated by perror)
+         #define LOG_ID_DMX 			0x        (Module define, translated by each module)
+1.3.1   SL_RET_CODE <-  LOG_ID_XXX << 16 | RET_ID
+typedef int alisl_retcode;
+                     
+1.4   platform will help all module to register error translate list
+1.4.1  all modules are installed in sub directory, platform get ${modulename}_ret_
+handler_register symbol to register
+1.4.2  platform provide an array, each module need to fill [LOG_ID_$MODULE, register] 
+in to it, platform will call them

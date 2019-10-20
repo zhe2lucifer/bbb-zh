@@ -1,0 +1,779 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_INIT([libaliplatform], [0.0.0], [Owen.Zhao@alitech.com])
+AC_PREREQ([2.61])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE([1.9])
+
+LIBALIPLATFORM_MAJOR_VERSION=0
+LIBALIPLATFORM_MINOR_VERSION=0
+LIBALIPLATFORM_MICRO_VERSION=0
+LIBALIPLATFORM_INTERFACE_AGE=0
+LIBALIPLATFORM_BINARY_AGE=0
+LIBALIPLATFORM_VERSION=$LIBALIPLATFORM_MAJOR_VERSION.$LIBALIPLATFORM_MINOR_VERSION.$LIBALIPLATFORM_MICRO_VERSION
+
+AC_SUBST(LIBALIPLATFORM_MAJOR_VERSION)
+AC_SUBST(LIBALIPLATFORM_MINOR_VERSION)
+AC_SUBST(LIBALIPLATFORM_MICRO_VERSION)
+AC_SUBST(LIBALIPLATFORM_INTERFACE_AGE)
+AC_SUBST(LIBALIPLATFORM_BINARY_AGE)
+AC_SUBST(LIBALIPLATFORM_VERSION)
+
+AC_DEFINE_UNQUOTED(LIBALIPLATFORM_VERSION, "$LIBALIPLATFORM_VERSION", [The libaliplatform version])
+AC_DEFINE_UNQUOTED(LIBALIPLATFORM_MAJOR_VERSION, $LIBALIPLATFORM_MAJOR_VERSION, [The libaliplatform major version])
+AC_DEFINE_UNQUOTED(LIBALIPLATFORM_MINOR_VERSION, $LIBALIPLATFORM_MINOR_VERSION, [The libaliplatform minor version])
+AC_DEFINE_UNQUOTED(LIBALIPLATFORM_MICRO_VERSION, $LIBALIPLATFORM_MICRO_VERSION, [The libaliplatform micro version])
+
+PACKAGE=libaliplatform
+VERSION=$LIBALIPLATFORM_VERSION
+
+# libtool versioning
+LT_RELEASE=$LIBALIPLATFORM_MAJOR_VERSION.$LIBALIPLATFORM_MINOR_VERSION
+LT_CURRENT=`expr $LIBALIPLATFORM_MICRO_VERSION - $LIBALIPLATFORM_INTERFACE_AGE`
+LT_BINARY=`expr $LIBALIPLATFORM_MICRO_VERSION - $LIBALIPLATFORM_BINARY_AGE`
+LT_REVISION=$LIBALIPLATFORM_INTERFACE_AGE
+LT_AGE=`expr $LIBALIPLATFORM_BINARY_AGE - $LIBALIPLATFORM_INTERFACE_AGE`
+
+AC_SUBST(LT_RELEASE)
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_BINARY)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+
+# Checks for programs.
+
+AC_PROG_CC
+AC_PROG_CXX
+AM_PROG_LIBTOOL
+AM_PROG_CC_C_O
+
+# Checks for libraries.
+
+# Checks for header files.
+
+# Checks for typedefs, structures, and compiler characteristics.
+
+# Checks for library functions.
+
+AC_CHECK_FUNCS([getopt getopt_long])
+
+AC_ARG_ENABLE([examples],
+              AC_HELP_STRING([--enable-examples],
+                             [build sample programs @<:@default=no@:>@]),
+              [],
+              [enable_examples=no])
+AM_CONDITIONAL(BUILD_EXAMPLES, test "$enable_examples" = "yes")
+
+AC_ARG_ENABLE([tests],
+              AC_HELP_STRING([--enable-tests],
+                             [build module unitest @<:@default=no@:>@]),
+              [],
+              [enable_tests=no])
+AM_CONDITIONAL(BUILD_TESTS, test "$enable_tests" = "yes")
+
+AC_ARG_ENABLE([docs],
+              AC_HELP_STRING([--enable-docs],
+                             [build documentation @<:@default=no@:>@]),
+              [],
+              [enable_docs=no])
+AM_CONDITIONAL(BUILD_DOCUMENT, test "$enable_docs" = "yes")
+
+
+AC_ARG_ENABLE([vmxplus],
+              AC_HELP_STRING([--enable-vmxplus],
+                             [build vmxplus @<:@default=no@:>@]),
+         [enable_vmxplus=yes],
+		 [enable_vmxplus=no])
+AM_CONDITIONAL(BUILD_VMXPLUS, test "$enable_vmxplus" = "yes")
+
+if test "$enable_docs" = "yes"; then
+	AC_CHECK_PROG(DOXYGEN, [doxygen], [true], [false])
+fi
+AM_CONDITIONAL(HAVE_DOXYGEN, [test "$DOXYGEN" = "true"])
+
+AM_CONDITIONAL(BUILD_SHARED, test "$enable_shared" = "yes")
+AM_CONDITIONAL(BUILD_STATIC, test "$enable_static" = "yes")
+
+CFLAGS="-fstack-protector -fstack-protector-all -Wstack-protector -Wall -Werror -Wformat=2 $CFLAGS"
+if test "$enable_static" = "yes"; then
+	CFLAGS="-fPIC -DPIC -D_GNU_SOURCE $CFLAGS"
+fi
+
+AC_ARG_ENABLE([debug],
+              AC_HELP_STRING([--enable-debug],
+                             [enable debug information output @<:@default=no@:>@]),
+              [],
+              [enable_debug=no])
+if test "$enable_debug" = "yes"; then
+	CFLAGS="-g3 -O0 -fno-inline -Wno-inline -Wall -DENABLE_DEBUG $CFLAGS"
+	ENABLE_DEBUG=1
+	AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to output log.])
+else
+	ENABLE_DEBUG=0 
+	CFLAGS="-g3 -O -fno-inline -Wno-inline -Wall -DENABLE_DEBUG $BR2_CFLAGS $CFLAGS" #steven@2017.04.07 for Add D_FORTIFY_SOURCE=2,and added -O is warning call.
+fi
+AM_CONDITIONAL(BUILD_DEBUG, test "$enable_debug" = "yes")
+AC_SUBST(ENABLE_DEBUG)
+
+AC_ARG_ENABLE([localdebug],
+              AC_HELP_STRING([--enable-localdebug],
+                             [enable localdebug information output @<:@default=no@:>@]),
+              [],
+              [enable_localdebug=no])
+if test "$enable_localdebug" = "yes"; then
+	AC_DEFINE(LOCAL_DEBUG,1,[Define to 1 if you want to build for local debug.])
+fi
+
+#
+## MACRO for platform build
+#
+AM_CONDITIONAL([BUILD_BYPLATFORM], [test "yes" = "yes"])
+
+# MACRO for utilities
+AC_ARG_ENABLE([utils],
+             AC_HELP_STRING([--enable-utils],
+                            [build some utilities to debug @<:@default=no@:>@]),
+	     [],
+	     [enable_utils=no])
+AM_CONDITIONAL(BUILD_UTILITIES, test "$enable_utils" = "yes")
+
+# MACRO for DB
+AC_ARG_ENABLE([libdb],
+             AC_HELP_STRING([--enable-libdb],
+                            [build libdb @<:@default=yes@:>@]),
+	     [],
+	     [enable_libdb=no])
+AM_CONDITIONAL(BUILD_DB, test "$enable_libdb" = "yes")
+
+AC_ARG_ENABLE([libdmx],
+             AC_HELP_STRING([--enable-libdmx],
+                            [build libdmx @<:@default=yes@:>@]),
+	     [],
+	     [enable_libdmx=yes])
+AM_CONDITIONAL(BUILD_LIBDMX, test "$enable_libdmx" = "yes")
+
+AC_ARG_ENABLE([libgpio],
+             AC_HELP_STRING([--enable-libgpio],
+                            [build libgpio @<:@default=yes@:>@]),
+	     [],
+	     [enable_libgpio=yes])
+AM_CONDITIONAL(BUILD_LIBGPIO, test "$enable_libgpio" = "yes")
+
+
+AC_ARG_ENABLE([libsdec],
+             AC_HELP_STRING([--enable-libsdec],
+                            [build libsdec @<:@default=yes@:>@]),
+	     [],
+	     [enable_libsdec=yes])
+AM_CONDITIONAL(BUILD_LIBSDEC, test "$enable_libsdec" = "yes")
+
+AC_ARG_ENABLE([libcc],
+             AC_HELP_STRING([--enable-libcc],
+                            [build libcc @<:@default=yes@:>@]),
+	     [],
+	     [enable_libcc=yes])
+AM_CONDITIONAL(BUILD_LIBCC, test "$enable_libcc" = "yes")
+
+AC_ARG_ENABLE([libvbi],
+             AC_HELP_STRING([--enable-libvbi],
+                            [build libvbi @<:@default=yes@:>@]),
+	     [],
+	     [enable_libvbi=yes])
+AM_CONDITIONAL(BUILD_LIBVBI, test "$enable_libvbi" = "yes")
+
+AC_ARG_ENABLE([libtrng],
+             AC_HELP_STRING([--enable-libtrng],
+                            [build libtrng @<:@default=yes@:>@]),
+	     [],
+	     [enable_libtrng=yes])
+AM_CONDITIONAL(BUILD_LIBTRNG, test "$enable_libtrng" = "yes")
+
+
+AC_ARG_ENABLE([libsmc],
+             AC_HELP_STRING([--enable-libsmc],
+                            [build libsmc @<:@default=yes@:>@]),
+	     [],
+	     [enable_libsmc=yes])
+AM_CONDITIONAL(BUILD_LIBSMC, test "$enable_libsmc" = "yes")
+
+AC_ARG_ENABLE([libinput],
+             AC_HELP_STRING([--enable-libinput],
+                            [build libinput @<:@default=yes@:>@]),
+	     [],
+	     [enable_libinput=yes])
+AM_CONDITIONAL(BUILD_LIBINPUT, test "$enable_libinput" = "yes")
+
+AC_ARG_ENABLE([libevent],
+             AC_HELP_STRING([--enable-libevent],
+                            [build libevent @<:@default=yes@:>@]),
+	     [],
+	     [enable_libevent=yes])
+AM_CONDITIONAL(BUILD_LIBEVENT, test "$enable_libevent" = "yes")
+
+AC_ARG_ENABLE([libfake],
+             AC_HELP_STRING([--enable-libfake],
+                            [build libfake @<:@default=yes@:>@]),
+	     [],
+	     [enable_libfake=yes])
+AM_CONDITIONAL(BUILD_LIBFAKE, test "$enable_libfake" = "yes")
+
+AC_ARG_ENABLE([libscart],
+             AC_HELP_STRING([--enable-libscart],
+                            [build libscart @<:@default=yes@:>@]),
+	     [],
+	     [enable_libscart=yes])
+AM_CONDITIONAL(BUILD_LIBSCART, test "$enable_libscart" = "yes")
+
+AC_ARG_ENABLE([libstandby],
+             AC_HELP_STRING([--enable-libstandby],
+                            [build libstandby @<:@default=yes@:>@]),
+	     [],
+	     [enable_libstandby=yes])
+AM_CONDITIONAL(BUILD_LIBSTANDBY, test "$enable_libstandby" = "yes")
+
+AC_ARG_ENABLE([libdsc],
+             AC_HELP_STRING([--enable-libdsc],
+                            [build libdsc @<:@default=yes@:>@]),
+	     [],
+	     [enable_libdsc=yes])
+AM_CONDITIONAL(BUILD_LIBDSC, test "$enable_libdsc" = "yes")
+
+AC_ARG_ENABLE([libcic],
+             AC_HELP_STRING([--enable-libcic],
+                            [build libcic @<:@default=yes@:>@]),
+	     [],
+	     [enable_libcic=yes])
+AM_CONDITIONAL(BUILD_LIBCIC, test "$enable_libcic" = "yes")
+
+AC_ARG_ENABLE([libstorage],
+             AC_HELP_STRING([--enable-libstorage],
+                            [build libstorage @<:@default=yes@:>@]),
+	     [],
+	     [enable_libstorage=yes])
+AM_CONDITIONAL(BUILD_LIBSTORAGE, test "$enable_libstorage" = "yes")
+
+
+AC_ARG_ENABLE([libsysinfo],
+             AC_HELP_STRING([--enable-libsysinfo],
+                            [build libsysinfo @<:@default=yes@:>@]),
+	     [],
+	     [enable_libsysinfo=yes])
+AM_CONDITIONAL(BUILD_LIBSYSINFO, test "$enable_libsysinfo" = "yes")
+
+
+
+AC_ARG_ENABLE([libsnd],
+             AC_HELP_STRING([--enable-libsnd],
+                            [build libsnd @<:@default=yes@:>@]),
+	     [],
+	     [enable_libsnd=yes])
+AM_CONDITIONAL(BUILD_LIBSND, test "$enable_libsnd" = "yes")
+
+AC_ARG_ENABLE([libi2c],
+             AC_HELP_STRING([--enable-libi2c],
+                            [build libi2c @<:@default=yes@:>@]),
+       [],
+       [enable_libi2c=yes])
+AM_CONDITIONAL(BUILD_LIBI2C, test "$enable_libi2c" = "yes")
+
+AC_ARG_ENABLE([libnim],
+             AC_HELP_STRING([--enable-libnim],
+                            [build libnim @<:@default=yes@:>@]),
+	     [],
+	     [enable_libnim=yes])
+AM_CONDITIONAL(BUILD_LIBNIM, test "$enable_libnim" = "yes")
+
+
+AC_ARG_ENABLE([libtsi],
+             AC_HELP_STRING([--enable-libtsi],
+                            [build libtsi @<:@default=yes@:>@]),
+	     [],
+	     [enable_libtsi=yes])
+AM_CONDITIONAL(BUILD_LIBTSI, test "$enable_libtsi" = "yes")
+
+AC_ARG_ENABLE([libtsg],
+             AC_HELP_STRING([--enable-libtsg],
+                            [build libtsg @<:@default=yes@:>@]),
+	     [],
+	     [enable_libtsg=yes])
+AM_CONDITIONAL(BUILD_LIBTSG, test "$enable_libtsg" = "yes")
+
+
+AC_ARG_ENABLE([libce],
+             AC_HELP_STRING([--enable-libce],
+                            [build libce @<:@default=yes@:>@]),
+	     [],
+	     [enable_libce=yes])
+AM_CONDITIONAL(BUILD_LIBCE, test "$enable_libce" = "yes")
+
+
+AC_ARG_ENABLE([libcli],
+             AC_HELP_STRING([--enable-libcli],
+                            [build libcli @<:@default=yes@:>@]),
+	     [],
+	     [enable_libcli=yes])
+AM_CONDITIONAL(BUILD_LIBCLI, test "$enable_libcli" = "yes")
+
+
+AC_ARG_ENABLE([libdis],
+             AC_HELP_STRING([--enable-libdis],
+                            [build libdis @<:@default=yes@:>@]),
+	     [],
+	     [enable_libdis=yes])
+AM_CONDITIONAL(BUILD_LIBDIS, test "$enable_libdis" = "yes")
+
+
+AC_ARG_ENABLE([libvdec],
+             AC_HELP_STRING([--enable-libvdec],
+                            [build libvdec @<:@default=yes@:>@]),
+	     [],
+	     [enable_libvdec=yes])
+AM_CONDITIONAL(BUILD_LIBVDEC, test "$enable_libvdec" = "yes")
+
+
+AC_ARG_ENABLE([libwatchdog],
+             AC_HELP_STRING([--enable-libwatchdog],
+                            [build libwatchdog @<:@default=yes@:>@]),
+	     [],
+	     [enable_libwatchdog=yes])
+AM_CONDITIONAL(BUILD_LIBWATCHDOG, test "$enable_libwatchdog" = "yes")
+
+
+AC_ARG_ENABLE([libupgrade_v3],
+             AC_HELP_STRING([--enable-libupgrade_v3],
+                            [build libupgrade3.0 @<:@default=no@:>@]),
+	     [],
+	     [enable_libupgrade_v3=no])
+AM_CONDITIONAL(BUILD_LIBUPGRADE_V3, test "$enable_libupgrade_v3" = "yes")
+
+AC_ARG_ENABLE([libupgrade_v4],
+             AC_HELP_STRING([--enable-libuxxxxxxxxxxxxxpgrade_v4],
+                            [build libupgrade4.0 @<:@default=no@:>@]),
+	     [],
+	     [enable_libupgrade_v4=no])
+AM_CONDITIONAL(BUILD_LIBUPGRADE_V4, test "$enable_libupgrade_v4" = "yes")
+
+AC_ARG_ENABLE([libupgradeota],
+             AC_HELP_STRING([--enable-libupgradeota],
+                            [build libupgradeota @<:@default=no@:>@]),
+	     [],
+	     [enable_libupgradeota=no])
+AM_CONDITIONAL(BUILD_LIBUPGRADEOTA, test "$enable_libupgradeota" = "yes")
+
+AC_ARG_ENABLE([libunity],
+             AC_HELP_STRING([--enable-libunity],
+                            [build libunity @<:@default=yes@:>@]),
+	     [],
+	     [enable_libunity=yes])
+AM_CONDITIONAL(BUILD_LIBUNITY, test "$enable_libunity" = "yes")
+
+AC_ARG_ENABLE([libhdmi],
+             AC_HELP_STRING([--enable-libhdmi],
+                            [build libhdmi @<:@default=yes@:>@]),
+	     [],
+	     [enable_libhdmi=yes])
+AM_CONDITIONAL(BUILD_LIBHDMI, test "$enable_libhdmi" = "yes")
+
+AC_ARG_ENABLE([libotp],
+             AC_HELP_STRING([--enable-libotp],
+                            [build libotp @<:@default=yes@:>@]),
+	     [],
+	     [enable_libotp=yes])
+AM_CONDITIONAL(BUILD_LIBOTP, test "$enable_libotp" = "yes")
+
+AC_ARG_ENABLE([libsoc],
+             AC_HELP_STRING([--enable-libsoc],
+                            [build libsoc @<:@default=yes@:>@]),
+	     [],
+	     [enable_libsoc=yes])
+AM_CONDITIONAL(BUILD_LIBSOC, test "$enable_libsoc" = "yes")
+
+AC_ARG_ENABLE([libavsync],
+              AC_HELP_STRING([--enable-libavsync],
+                             [build libavsync @<:@default=yes@:>@]),
+         [],
+		 [enable_libavsync=yes])
+AM_CONDITIONAL(BUILD_LIBAVSYNC, test "$enable_libavsync" = "yes")
+
+
+AC_ARG_ENABLE([libpe],
+              AC_HELP_STRING([--enable-libpe],
+                             [build libpe @<:@default=yes@:>@]),
+         [],
+		 [enable_libpe=yes])
+AM_CONDITIONAL(BUILD_LIBPE, test "$enable_libpe" = "yes")
+
+AC_ARG_ENABLE([libsbm],
+              AC_HELP_STRING([--enable-libsbm],
+                             [build libsbm @<:@default=yes@:>@]),
+         [],
+		 [enable_libsbm=yes])
+AM_CONDITIONAL(BUILD_LIBSBM, test "$enable_libsbm" = "yes")
+
+AC_ARG_ENABLE([libconaxvsc],
+              AC_HELP_STRING([--enable-libconaxvsc],
+                             [build libconaxvsc @<:@default=no@:>@]),
+         [enable_libconaxvsc=yes],
+		 [enable_libconaxvsc=no])
+AM_CONDITIONAL(BUILD_LIBCONAXVSC, test "$enable_libconaxvsc" = "yes")
+
+AC_OUTPUT([
+Makefile
+libaliplatform.pc
+
+src/Makefile
+
+include/Makefile
+
+examples/Makefile
+
+doc/Makefile
+doc/doxygen/Makefile
+
+lib/Makefile
+
+lib/libalisltrng/Makefile
+lib/libalisltrng/libalisltrng.pc
+lib/libalisltrng/src/Makefile
+lib/libalisltrng/include/Makefile
+lib/libalisltrng/doc/Makefile
+lib/libalisltrng/doc/doxygen/Makefile
+lib/libalisltrng/examples/Makefile
+
+lib/libalislsmc/Makefile
+lib/libalislsmc/libalislsmc.pc
+lib/libalislsmc/include/Makefile
+lib/libalislsmc/src/Makefile
+lib/libalislsmc/doc/Makefile
+lib/libalislsmc/doc/doxygen/Makefile
+
+lib/libalislinput/Makefile
+lib/libalislinput/libalislinput.pc
+lib/libalislinput/include/Makefile
+lib/libalislinput/src/Makefile
+lib/libalislinput/doc/Makefile
+lib/libalislinput/doc/doxygen/Makefile
+
+lib/libalislevent/Makefile
+lib/libalislevent/libalislevent.pc
+lib/libalislevent/include/Makefile
+lib/libalislevent/src/Makefile
+lib/libalislevent/doc/Makefile
+lib/libalislevent/doc/doxygen/Makefile
+
+lib/libalislfake/Makefile
+lib/libalislfake/libalislfake.pc
+lib/libalislfake/src/Makefile
+lib/libalislfake/include/Makefile
+lib/libalislfake/doc/Makefile
+lib/libalislfake/doc/doxygen/Makefile
+lib/libalislfake/examples/Makefile
+lib/libalislfake/utils/Makefile
+
+lib/libalisldmx/Makefile
+lib/libalisldmx/libalisldmx.pc
+lib/libalisldmx/include/Makefile
+lib/libalisldmx/src/Makefile
+lib/libalisldmx/examples/Makefile
+lib/libalisldmx/doc/Makefile
+lib/libalisldmx/doc/doxygen/Makefile
+
+lib/libalislscart/Makefile
+lib/libalislscart/libalislscart.pc
+lib/libalislscart/src/Makefile
+lib/libalislscart/include/Makefile
+lib/libalislscart/doc/Makefile
+lib/libalislscart/doc/doxygen/Makefile
+lib/libalislscart/examples/Makefile
+
+lib/libalisldsc/Makefile
+lib/libalisldsc/libalisldsc.pc
+lib/libalisldsc/src/Makefile
+lib/libalisldsc/include/Makefile
+lib/libalisldsc/doc/Makefile
+lib/libalisldsc/doc/doxygen/Makefile
+lib/libalisldsc/examples/Makefile
+
+lib/libalislstandby/Makefile
+lib/libalislstandby/libalislstandby.pc
+lib/libalislstandby/src/Makefile
+lib/libalislstandby/include/Makefile
+lib/libalislstandby/doc/Makefile
+lib/libalislstandby/doc/doxygen/Makefile
+lib/libalislstandby/examples/Makefile
+
+lib/libalislcic/Makefile
+lib/libalislcic/libalislcic.pc
+lib/libalislcic/src/Makefile
+lib/libalislcic/include/Makefile
+lib/libalislcic/doc/Makefile
+lib/libalislcic/doc/doxygen/Makefile
+lib/libalislcic/examples/Makefile
+
+lib/libalislstorage/Makefile
+lib/libalislstorage/libalislstorage.pc
+lib/libalislstorage/src/Makefile
+lib/libalislstorage/include/Makefile
+lib/libalislstorage/doc/Makefile
+lib/libalislstorage/doc/doxygen/Makefile
+lib/libalislstorage/examples/Makefile
+
+lib/libalislsysinfo/Makefile
+lib/libalislsysinfo/libalislsysinfo.pc
+lib/libalislsysinfo/src/Makefile
+lib/libalislsysinfo/include/Makefile
+lib/libalislsysinfo/doc/Makefile
+lib/libalislsysinfo/doc/doxygen/Makefile
+lib/libalislsysinfo/examples/Makefile
+
+lib/libalislsnd/Makefile
+lib/libalislsnd/libalislsnd.pc
+lib/libalislsnd/src/Makefile
+lib/libalislsnd/include/Makefile
+lib/libalislsnd/doc/Makefile
+lib/libalislsnd/doc/doxygen/Makefile
+lib/libalislsnd/examples/Makefile
+
+lib/libalislgpio/Makefile
+lib/libalislgpio/libalislgpio.pc
+lib/libalislgpio/src/Makefile
+lib/libalislgpio/include/Makefile
+lib/libalislgpio/doc/Makefile
+lib/libalislgpio/doc/doxygen/Makefile
+
+lib/libalislsdec/Makefile
+lib/libalislsdec/libalislsdec.pc
+lib/libalislsdec/src/Makefile
+lib/libalislsdec/include/Makefile
+lib/libalislsdec/doc/Makefile
+lib/libalislsdec/doc/doxygen/Makefile
+lib/libalislsdec/examples/Makefile
+
+lib/libalislcc/Makefile
+lib/libalislcc/libalislcc.pc
+lib/libalislcc/src/Makefile
+lib/libalislcc/include/Makefile
+lib/libalislcc/doc/Makefile
+lib/libalislcc/doc/doxygen/Makefile
+lib/libalislcc/examples/Makefile
+
+lib/libalislvbi/Makefile
+lib/libalislvbi/libalislvbi.pc
+lib/libalislvbi/src/Makefile
+lib/libalislvbi/include/Makefile
+lib/libalislvbi/doc/Makefile
+lib/libalislvbi/doc/doxygen/Makefile
+lib/libalislvbi/examples/Makefile
+
+lib/libalislupgrade_v3/Makefile
+lib/libalislupgrade_v3/libalislupgrade.pc
+lib/libalislupgrade_v3/src/Makefile
+lib/libalislupgrade_v3/src/info/Makefile
+lib/libalislupgrade_v3/src/plugins/Makefile
+lib/libalislupgrade_v3/src/plugins/net/Makefile
+lib/libalislupgrade_v3/src/plugins/usb/Makefile
+lib/libalislupgrade_v3/src/plugins/ota/Makefile
+lib/libalislupgrade_v3/include/Makefile
+lib/libalislupgrade_v3/doc/Makefile
+lib/libalislupgrade_v3/doc/doxygen/Makefile
+lib/libalislupgrade_v3/examples/Makefile
+
+lib/libalislupgrade_v4/Makefile
+lib/libalislupgrade_v4/libalislupgrade.pc
+lib/libalislupgrade_v4/src/Makefile
+lib/libalislupgrade_v4/src/plugins/Makefile
+lib/libalislupgrade_v4/src/plugins/net/Makefile
+lib/libalislupgrade_v4/src/plugins/usb/Makefile
+lib/libalislupgrade_v4/src/plugins/ota/Makefile
+lib/libalislupgrade_v4/include/Makefile
+lib/libalislupgrade_v4/doc/Makefile
+lib/libalislupgrade_v4/doc/doxygen/Makefile
+lib/libalislupgrade_v4/examples/Makefile
+
+
+lib/libalisldb/Makefile
+lib/libalisldb/libalisldb.pc
+lib/libalisldb/include/Makefile
+lib/libalisldb/examples/Makefile
+lib/libalisldb/src/Makefile
+lib/libalisldb/doc/Makefile
+lib/libalisldb/doc/doxygen/Makefile
+
+lib/libalislce/Makefile
+lib/libalislce/libalislce.pc
+lib/libalislce/src/Makefile
+lib/libalislce/include/Makefile
+lib/libalislce/doc/Makefile
+lib/libalislce/doc/doxygen/Makefile
+lib/libalislce/examples/Makefile
+
+lib/libalisli2c/Makefile
+lib/libalisli2c/libalisli2c.pc
+lib/libalisli2c/src/Makefile
+lib/libalisli2c/include/Makefile
+lib/libalisli2c/doc/Makefile
+lib/libalisli2c/doc/doxygen/Makefile
+
+lib/libalislnim/Makefile
+lib/libalislnim/libalislnim.pc
+lib/libalislnim/include/Makefile
+lib/libalislnim/src/Makefile
+lib/libalislnim/examples/Makefile
+lib/libalislnim/doc/Makefile
+lib/libalislnim/doc/doxygen/Makefile
+
+lib/libalisltsi/Makefile
+lib/libalisltsi/libalisltsi.pc
+lib/libalisltsi/include/Makefile
+lib/libalisltsi/src/Makefile
+lib/libalisltsi/examples/Makefile
+lib/libalisltsi/doc/Makefile
+lib/libalisltsi/doc/doxygen/Makefile
+
+lib/libalisltsg/Makefile
+lib/libalisltsg/libalisltsg.pc
+lib/libalisltsg/include/Makefile
+lib/libalisltsg/src/Makefile
+lib/libalisltsg/examples/Makefile
+lib/libalisltsg/doc/Makefile
+lib/libalisltsg/doc/doxygen/Makefile
+
+lib/libalislcli/Makefile
+lib/libalislcli/libalislcli.pc
+lib/libalislcli/include/Makefile
+lib/libalislcli/src/Makefile
+lib/libalislcli/examples/Makefile
+lib/libalislcli/doc/Makefile
+lib/libalislcli/doc/doxygen/Makefile
+
+lib/libalislwatchdog/Makefile
+lib/libalislwatchdog/libalislwatchdog.pc
+lib/libalislwatchdog/include/Makefile
+lib/libalislwatchdog/src/Makefile
+lib/libalislwatchdog/examples/Makefile
+lib/libalislwatchdog/doc/Makefile
+lib/libalislwatchdog/doc/doxygen/Makefile
+
+lib/libalisldis/Makefile
+lib/libalisldis/libalisldis.pc
+lib/libalisldis/include/Makefile
+lib/libalisldis/src/Makefile
+lib/libalisldis/doc/Makefile
+lib/libalisldis/doc/doxygen/Makefile
+
+lib/libalislvdec/Makefile
+lib/libalislvdec/libalislvdec.pc
+lib/libalislvdec/include/Makefile
+lib/libalislvdec/src/Makefile
+lib/libalislvdec/doc/Makefile
+lib/libalislvdec/doc/doxygen/Makefile
+
+lib/libaliunity/Makefile
+lib/libaliunity/libaliunity.pc
+lib/libaliunity/include/Makefile
+lib/libaliunity/src/Makefile
+lib/libaliunity/examples/Makefile
+lib/libaliunity/doc/Makefile
+lib/libaliunity/doc/doxygen/Makefile
+
+lib/libalislhdmi/Makefile
+lib/libalislhdmi/libalislhdmi.pc
+lib/libalislhdmi/include/Makefile
+lib/libalislhdmi/src/Makefile
+lib/libalislhdmi/examples/Makefile
+lib/libalislhdmi/doc/Makefile
+lib/libalislhdmi/doc/doxygen/Makefile
+
+lib/libalislotp/Makefile
+lib/libalislotp/libalislotp.pc
+lib/libalislotp/include/Makefile
+lib/libalislotp/src/Makefile
+lib/libalislotp/examples/Makefile
+lib/libalislotp/doc/Makefile
+lib/libalislotp/doc/doxygen/Makefile
+
+lib/libalislsoc/Makefile
+lib/libalislsoc/libalislsoc.pc
+lib/libalislsoc/include/Makefile
+lib/libalislsoc/src/Makefile
+lib/libalislsoc/examples/Makefile
+lib/libalislsoc/doc/Makefile
+lib/libalislsoc/doc/doxygen/Makefile
+
+lib/libalislavsync/Makefile
+lib/libalislavsync/libalislavsync.pc
+lib/libalislavsync/src/Makefile
+lib/libalislavsync/examples/Makefile
+lib/libalislavsync/include/Makefile
+lib/libalislavsync/doc/Makefile
+lib/libalislavsync/doc/doxygen/Makefile
+
+lib/libalislpe/Makefile
+lib/libalislpe/libalislpe.pc
+lib/libalislpe/src/Makefile
+lib/libalislpe/examples/Makefile
+lib/libalislpe/include/Makefile
+lib/libalislpe/doc/Makefile
+lib/libalislpe/doc/doxygen/Makefile
+
+lib/libalislsbm/Makefile
+lib/libalislsbm/libalislsbm.pc
+lib/libalislsbm/src/Makefile
+lib/libalislsbm/examples/Makefile
+lib/libalislsbm/include/Makefile
+lib/libalislsbm/doc/Makefile
+lib/libalislsbm/doc/doxygen/Makefile
+
+lib/libalislconaxvsc/Makefile
+lib/libalislconaxvsc/libalislconaxvsc.pc
+lib/libalislconaxvsc/src/Makefile
+lib/libalislconaxvsc/include/Makefile
+lib/libalislconaxvsc/doc/Makefile
+lib/libalislconaxvsc/doc/doxygen/Makefile
+lib/libalislconaxvsc/examples/Makefile
+
+tests/Makefile
+])
+
+AC_MSG_RESULT([])
+AC_MSG_RESULT([examples    : ${enable_examples}])
+AC_MSG_RESULT([debug       : ${enable_debug}])
+AC_MSG_RESULT([docs        : ${enable_docs}])
+AC_MSG_RESULT([])
+AC_MSG_RESULT([package check status:])
+AC_MSG_RESULT([libdmx      : ${enable_libdmx}])
+AC_MSG_RESULT([libsdec     : ${enable_libsdec}])
+AC_MSG_RESULT([libcc       : ${enable_libcc}])
+AC_MSG_RESULT([libvbi      : ${enable_libvbi}])
+AC_MSG_RESULT([libtrng     : ${enable_libtrng}])
+AC_MSG_RESULT([libsmc      : ${enable_libsmc}])
+AC_MSG_RESULT([libinput    : ${enable_libinput}])
+AC_MSG_RESULT([libevent    : ${enable_libevent}])
+AC_MSG_RESULT([libfake     : ${enable_libfake}])
+AC_MSG_RESULT([libscart    : ${enable_libscart}])
+AC_MSG_RESULT([libstandby  : ${enable_libstandby}])
+AC_MSG_RESULT([libdsc      : ${enable_libdsc}])
+AC_MSG_RESULT([libcic      : ${enable_libcic}])
+AC_MSG_RESULT([libstorage  : ${enable_libstorage}])
+AC_MSG_RESULT([libsysinfo  : ${enable_libsysinfo}])
+AC_MSG_RESULT([libsnd      : ${enable_libsnd}])
+AC_MSG_RESULT([libi2c      : ${enable_libi2c}])
+AC_MSG_RESULT([libgpio     : ${enable_libgpio}])
+AC_MSG_RESULT([libnim      : ${enable_libnim}])
+AC_MSG_RESULT([libtsi      : ${enable_libtsi}])
+AC_MSG_RESULT([libtsg      : ${enable_libtsg}])
+AC_MSG_RESULT([libce       : ${enable_libce}])
+AC_MSG_RESULT([libcli      : ${enable_libcli}])
+AC_MSG_RESULT([libdis      : ${enable_libdis}])
+AC_MSG_RESULT([libvdec     : ${enable_libvdec}])
+AC_MSG_RESULT([libwatchdog : ${enable_libwatchdog}])
+AC_MSG_RESULT([libupgrade_v3  : ${enable_libupgrade_v3}])
+AC_MSG_RESULT([libupgrade_v4  : ${enable_libupgrade_v4}])
+AC_MSG_RESULT([libunity    : ${enable_libunity}])
+AC_MSG_RESULT([libhdmi     : ${enable_libhdmi}])
+AC_MSG_RESULT([libotp      : ${enable_libotp}])
+AC_MSG_RESULT([libdb       : ${enable_libdb}])
+AC_MSG_RESULT([libsoc      : ${enable_libsoc}])
+AC_MSG_RESULT([libavsync   : ${enable_libavsync}])
+AC_MSG_RESULT([libconaxvsc   : ${enable_libconaxvsc}])

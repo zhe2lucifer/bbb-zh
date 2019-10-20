@@ -1,0 +1,15 @@
+CC = /opt/mipsel-4.4/bin/mipsel-linux-gnu-gcc
+
+SYSROOT = $(shell readlink -f $(PWD)/../../../)
+
+CFLAGS = -I$(SYSROOT)/fs.include/ -I$(SYSROOT)/fs.include/dbus-1.0 \
+	-L$(SYSROOT)/fs.install/usr/lib/ -ldbus-1
+
+TARGET = dbus_example
+
+
+all: $(TARGET)
+	cp $^ ~/nfs_mount
+
+dbus_example: dbus_example.c
+	$(CC) $(CFLAGS) -o $@ $^

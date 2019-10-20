@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: libalisldis
+Description: libalisldis library for control vpost
+Version: @VERSION@
+Requires: libaliplatform
+Libs: -L${libdir} -lalisldis
+Libs.private: -L${libdir}
+Cflags: -I${includedir}

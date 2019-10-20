@@ -1,0 +1,7 @@
+The retcode is defined in include/alipltfretcode.h
+
+use
+
+#include <alipltfretcode.h>
+
+in your source.

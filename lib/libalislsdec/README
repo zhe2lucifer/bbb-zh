@@ -1,0 +1,71 @@
+/**
+\mainpage
+A Linux standard random generating process is different level sha process.
+For standard software random device which is provided by kernel, it's generate
+the random with sha function in kernel to get the data with given seed.
+For openssl library, it do sha again with the data from the random device.
+
+The TRNG will get the random data from the hardware directly, not do any
+sha after we get the data.
+
+It could be used as lowlevel random implemention easily.
+
+1  Compilation
+
+	./autogen.sh 
+
+	./configure --prefix= CC= CFLAGS= --host= CPPFLAGS=-Ipath/to/include
+
+	make 
+
+	make install 
+
+2  Debug and Test
+
+	./autogen.sh 
+
+	./configure --prefix=$install_dir CPPFLAGS=-Ipath/to/include --enable-debug --enable-examples --host=
+
+	make 
+
+	make install 
+	
+	cp $install_dir/bin/* $fs_dir/usr/bin 
+
+	cp $install_dir/lib/*so* $fs_dir/usr/lib 
+
+	compile the SDK 
+
+	download the image to board 
+
+	--------------------------------------------
+
+	The following step is run in board terminal
+
+	--------------------------------------------
+
+3  Dependencies
+
+	-pthread (examples)
+
+	ali snd driver (src)
+
+	ali tailed kernel (src)
+
+4  Support OpenSSL
+
+	To support OpenSSL, we just need to re-implement RAND_poll function with ALi
+	random hardware to generate the random data which will used as the seed of 
+	OpenSSL random engine from hardware.
+
+5  PKG-CONFIG Command
+
+	PKG_CONFIG_PATH=pkg-config
+
+6  Notes
+
+	It's threads safe and processes safe for wrapper APIs, but not safe for inner
+	APIs. The application is recommended to call the wrapper APIs, or application
+	have to guarantee to safety.
+
+*/

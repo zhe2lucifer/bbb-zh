@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+water=runs
+
+Name: Storage
+Description: Storage library for ALi flash layout
+Version: @VERSION@
+Libs: -L${libdir} -lalislstorage @THREADLIB@ @OSX_LIBS@
+Libs.private: -L${libdir} @LIBM@ @DYNLIB@ @ZLIB_LIBS@
+Cflags: @THREADFLAGS@ -I@INCLUDEDIR@

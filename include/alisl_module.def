@@ -1,0 +1,37 @@
+/*
+ * List of all modules provided by the ALi shared library
+ */
+ALISL_MOD_DEF(TRNG) /* true random generator */
+ALISL_MOD_DEF(DMX) /* demux */
+ALISL_MOD_DEF(DSC) /* scrambler, descrambler */
+ALISL_MOD_DEF(CE) /* crypto engine, key ladder */
+ALISL_MOD_DEF(SMC) /* smartcard */
+ALISL_MOD_DEF(FAKE)
+ALISL_MOD_DEF(HDMI)
+ALISL_MOD_DEF(NIM)
+ALISL_MOD_DEF(CIC) /* CI interface */
+ALISL_MOD_DEF(TSG)
+ALISL_MOD_DEF(TSI)
+ALISL_MOD_DEF(OTP)
+ALISL_MOD_DEF(PE)
+ALISL_MOD_DEF(PM) /* power management, standby */
+ALISL_MOD_DEF(SCART)
+ALISL_MOD_DEF(SOC)
+ALISL_MOD_DEF(WATCHDOG)
+ALISL_MOD_DEF(STORAGE)
+ALISL_MOD_DEF(SYSINFO)
+ALISL_MOD_DEF(DIS)
+ALISL_MOD_DEF(VDEC) /* video decoder */
+ALISL_MOD_DEF(AVSYNC) /* audio video sync */
+ALISL_MOD_DEF(SBM) /* shared buffer management with the SEE */
+ALISL_MOD_DEF(I2C)
+ALISL_MOD_DEF(UPGRADE)
+ALISL_MOD_DEF(SDEC) /* subtitle decoder */
+ALISL_MOD_DEF(CC) /* close caption */
+ALISL_MOD_DEF(SND) /* sound */
+ALISL_MOD_DEF(VBI) /* vertical blanking interface */
+ALISL_MOD_DEF(CONAXVSC) /* Conax virtual smartcard */
+ALISL_MOD_DEF(EVENT)
+ALISL_MOD_DEF(DB) /* database */
+ALISL_MOD_DEF(GPIO)
+ALISL_MOD_DEF(INPUT)
